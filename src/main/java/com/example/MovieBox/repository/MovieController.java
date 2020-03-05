@@ -3,6 +3,10 @@ package com.example.MovieBox.repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
 @RequestMapping("/movieBox")
 public class MovieController {
@@ -25,17 +29,18 @@ public class MovieController {
         return movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException("Movie with id " + id + " was not found"));
     }
 
-
-    public MovieEntity[] getAllMovies() {
-        return null; //TODO: Out of time :(
-//        Iterable<MovieEntity> movies = movieRepository.findAll();
-//        movies.
-//        MovieEntity[] moviesArray =
-//        return movieRepository.findAll().;
+    @GetMapping("/movies")
+    @ResponseStatus(HttpStatus.OK)
+    public List<MovieEntity> getAllMovies() {
+        List<MovieEntity> movies = new ArrayList<MovieEntity>();
+        movieRepository.findAll().forEach(movie -> movies.add(movie));
+        return movies;
     }
 
-    public MovieEntity deleteMovie() {
-        return null;
+    @DeleteMapping("/movie/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteMovie(@RequestBody MovieEntity movie) {
+        movieRepository.delete(movie);
     }
 
     @ExceptionHandler(MovieNotFoundException.class)
